@@ -1,0 +1,92 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+button{
+width:100%;
+height:30px;
+border:none;
+color: white;
+box-shadow: 3px 3px solid gray;
+}
+#out{
+color:green;
+}
+.home{
+background-color: red;
+}
+.save{
+background-color: blue;
+}
+</style>
+<p id="out"></p>
+__EXISTING_FILES__
+<table>
+<tr><td>Medicine Name</td><td><input type="text" id="name"></td></tr>
+<tr><td>Brand</td><td><input type="text" id="brand"></td></tr>
+<tr><td>Wholesale Price</td><td><input type="number" id="actualprice"></td></tr>
+<tr><td>Selling Price</td><td><input type="number" id="price"></td></tr>
+<tr><td>Quantity</td><td><input type="number" id="qty"></td></tr>
+<tr><td>Counter Id</td><td><input type="text" id="ctrId"></td></tr>
+<tr><td><button type="button" class="home" onclick="gotohome()">Home</button></td><td><button type="button" class="save" onclick="save()">Save</button></td></tr>
+</table>
+<script>
+function gotohome(){
+  window.location.href="/";
+}
+function $(selector){
+  return document.querySelector(selector);
+}
+let name=$("#name");
+let out=$("#out");
+let brand=$("#brand");
+let price=$("#price");
+let actualprice=$("#actualprice");
+let qty=$("#qty");
+let ctrId=$("#ctrId");
+function reset(flds){
+  for(i in flds){
+    flds[i].value="";
+  }
+}
+function v(elem){
+  if(elem.value.indexOf(" ")>-1){
+    return elem.value.split(" ").join("_");
+  }
+  return elem.value;
+}
+function save(){
+var xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+       out.innerText=xhttp.responseText;
+       setTimeout(function(){
+         out.innerText="";
+       },4000);
+       reset([name,brand,price,actualprice,qty,ctrId]);
+    }
+};
+xhttp.open("GET", `/api/adddata?name=${v(name)}&brand=${v(brand)}&price=${v(price)}&actualprice=${v(actualprice)}&qty=${v(qty)}&ctrId=${v(ctrId)}`, true);
+xhttp.send();
+}
+let dropDown=document.querySelector("select");
+dropDown.addEventListener("change",populateData);
+function populateData(){
+  if(dropDown.value!=""){
+var xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+       let data = JSON.parse(xhttp.responseText);
+       if(data && data.length==1){
+         name.value=data[0].name;
+         price.value=data[0].price;
+         actualprice.value=data[0].actualprice;
+         brand.value=data[0].brand;
+         ctrId.value=data[0].ctrId;
+         qty.value=data[0].qty;
+       }
+    }
+};
+xhttp.open("GET", `/api/readdata?name=${v(dropDown)}`, true);
+xhttp.send();
+  }
+}
+</script>

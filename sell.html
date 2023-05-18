@@ -1,0 +1,164 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+button{
+width:100%;
+height:30px;
+border:none;
+color: white;
+box-shadow: 3px 3px solid gray;
+}
+.home{
+background-color: red;
+}
+table{
+  border-collapse:collapse;
+  width:100%;
+}
+table td{
+  border: 1px solid black;
+}
+input{
+width:100%;
+height:40px;
+font-size:20px;
+}
+a,li{
+border:none;
+background-color:blue;
+color: white;
+box-shadow: 3px 3px solid gray;
+padding:20px 5px;
+margin-top:20px;
+width:120px;
+text-decoration: none;
+border-radius:10px;
+box-shadow:3px 3px 7px black;
+}
+.radio{
+width:45px;
+}
+</style>
+<table id="mainTable">
+<tr><td colspan="7"><input type="text" id="medicineName" onkeyup="searchMedicine()"></td></tr>
+<tr><td id="out" colspan="6"></td></tr>
+</table>
+
+<button type="button" class="home" onclick="gotohome()">Home</button>
+
+<table id="selTable">
+
+</table>
+<script>
+function gotohome(){
+  window.location.href="/";
+}
+function $(selector){
+  return document.querySelector(selector);
+}
+let mainTable=$("#mainTable");
+let selTable=$("#selTable");
+let searchData=[];
+function searchMedicine(){
+  let out=$("#out");
+  let medicineName = $("#medicineName").value;
+  if(medicineName.trim().indexOf(" ")>-1){
+    medicineName=medicineName.trim().split(" ").join("_");
+  }
+  var xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+       let resp=xhttp.responseText;
+       if(resp.toLowerCase().startsWith("no")){
+        cleanUp();
+        out.innerText=resp;
+      } else {
+        cleanUp();
+        let respObjs=JSON.parse(resp);
+        for(i in respObjs){
+        let respObj=respObjs[i];
+        let tr = document.createElement("tr");
+        let td00 = document.createElement("td");
+        let option = document.createElement("input");
+        option.setAttribute("type","radio")
+        option.setAttribute("name","sel_radio");
+        option.value = "ok";
+        option.addEventListener("click",optionListener(respObj,option));
+        option.setAttribute("class","radio");
+        td00.appendChild(option);
+        let td0 = document.createElement("td");
+        td0.innerText=respObj.name;
+        let td1 = document.createElement("td");
+        td1.innerText=respObj.brand;
+        let td2 = document.createElement("td");
+        td2.innerText=respObj.actualprice;
+        let td3 = document.createElement("td");
+        td3.innerText=respObj.price;
+        let td4 = document.createElement("td");
+        td4.innerText=respObj.qty;
+        let td5 = document.createElement("td");
+        td5.innerText=respObj.ctrId;
+        tr.appendChild(td00);
+        tr.appendChild(td0);
+        tr.appendChild(td1);
+        tr.appendChild(td2);
+        tr.appendChild(td3);
+        tr.appendChild(td4);
+        tr.appendChild(td5);
+        mainTable.appendChild(tr);
+        searchData.push(tr);
+        }
+      }
+    }
+};
+xhttp.open("GET", `/api/readdata?name=${medicineName}`, true);
+xhttp.send();
+}
+function cleanUp(){
+  out.innerText="";
+  for(i in searchData){
+    mainTable.removeChild(searchData[i]);
+  }
+  searchData=[];
+}
+let selTableRows=[];
+function cleanUpSelTableRows(){
+  for(i in selTableRows){
+    selTable.removeChild(selTableRows[i]);
+  }
+  selTableRows =[];
+}
+function optionListener(respObj,option){
+  let func = function(){
+    cleanUpSelTableRows();
+    let tr=document.createElement("tr");
+    let td0=document.createElement("td");
+    let td1=document.createElement("td");
+    let td2=document.createElement("td");
+    td0.innerText=respObj.name;
+    td1.innerText=respObj.brand;
+    td2.innerText=respObj.price;
+    tr.appendChild(td0);
+    tr.appendChild(td1);
+    tr.appendChild(td2);
+    selTable.appendChild(tr);
+    selTableRows.push(tr);
+    let tr2=document.createElement("tr");
+    let td20=document.createElement("td");
+    let td21=document.createElement("td");
+    let td22=document.createElement("td");
+    let qtyInput=document.createElement("input");
+    qtyInput.setAttribute("type","number");
+    qtyInput.value = 1;
+    td20.appendChild(qtyInput);
+    
+    td22.innerText=respObj.price;
+    tr2.appendChild(td20);
+    tr2.appendChild(td21);
+    tr2.appendChild(td22);
+    selTable.appendChild(tr2);
+    selTableRows.push(tr2);
+  };
+  return func;
+}
+
+</script>
