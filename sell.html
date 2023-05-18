@@ -25,6 +25,11 @@ input{
 height:40px;
 font-size:20px;
 }
+.sellBtn {
+background-color:green;
+color:white;
+width:100%;
+}
 a,li{
 border:none;
 background-color:blue;
@@ -202,6 +207,7 @@ function optionListener(respObj,option){
     td23.innerText=respObj.price;
     let sellBtn = document.createElement("button");
     sellBtn.innerText = "Sell";
+    sellBtn.setAttribute("class","sellBtn");
     td24.appendChild(sellBtn);
     
     tr2.appendChild(td20);
