@@ -25,6 +25,7 @@ __EXISTING_FILES__
 <tr><td>Wholesale Price</td><td><input type="number" id="actualprice"></td></tr>
 <tr><td>Selling Price</td><td><input type="number" id="price"></td></tr>
 <tr><td>Quantity</td><td><input type="number" id="qty"></td></tr>
+<tr><td>Item Per Unit</td><td><input type="number" id="itmPrUnit"></td></tr>
 <tr><td>Counter Id</td><td><input type="text" id="ctrId"></td></tr>
 <tr><td><button type="button" class="home" onclick="gotohome()">Home</button></td><td><button type="button" class="save" onclick="save()">Save</button></td></tr>
 </table>
@@ -41,6 +42,7 @@ let brand=$("#brand");
 let price=$("#price");
 let actualprice=$("#actualprice");
 let qty=$("#qty");
+let itmPrUnit = $("#itmPrUnit");
 let ctrId=$("#ctrId");
 function reset(flds){
   for(i in flds){
@@ -61,10 +63,11 @@ xhttp.onreadystatechange = function() {
        setTimeout(function(){
          out.innerText="";
        },4000);
+       itmPrUnit.value = "1";
        reset([name,brand,price,actualprice,qty,ctrId]);
     }
 };
-xhttp.open("GET", `/api/adddata?name=${v(name)}&brand=${v(brand)}&price=${v(price)}&actualprice=${v(actualprice)}&qty=${v(qty)}&ctrId=${v(ctrId)}`, true);
+xhttp.open("GET", `/api/adddata?name=${v(name)}&brand=${v(brand)}&price=${v(price)}&actualprice=${v(actualprice)}&qty=${v(qty)}&itmPrUnit=${itmPrUnit}&ctrId=${v(ctrId)}`, true);
 xhttp.send();
 }
 let dropDown=document.querySelector("select");
@@ -81,6 +84,7 @@ xhttp.onreadystatechange = function() {
          actualprice.value=data[0].actualprice;
          brand.value=data[0].brand;
          ctrId.value=data[0].ctrId;
+         itmPrUnit.value=data[0].itmPrUnit;
          qty.value=data[0].qty;
        }
     }
