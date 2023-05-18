@@ -1,0 +1,2 @@
+mkdir medicines
+mkdir sales
