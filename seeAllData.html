@@ -1,11 +1,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 table{
-  border-collapse:collapse;
-  width:100%;
+    border-collapse:collapse;
+  table-layout: fixed;
+  width:90%;
+  margin-top:40px;
+  margin-left:auto;
+  margin-right:auto;
+  box-shadow:0px 0px 7px lightgreen;
 }
 table td{
-  border: 1px solid black;
 }
 button{
 width:100%;
@@ -19,7 +23,14 @@ background-color: red;
 }
 </style>
 __TABLE__
+<table>
+<tr>
+<td>
 <button type="button" class="home" onclick="gotohome()">Home</button>
+</td>
+</tr>
+</table>
+
 <script>
 function gotohome(){
   window.location.href="/";

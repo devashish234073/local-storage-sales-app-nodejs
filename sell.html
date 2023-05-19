@@ -1,5 +1,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
+*{
+outline:none;
+}
 button{
 height:30px;
 border:none;
@@ -16,12 +19,16 @@ width:100%;
 table{
   border-collapse:collapse;
   table-layout: fixed;
-  width:100%;
+  width:90%;
+  margin-top:40px;
+  margin-left:auto;
+  margin-right:auto;
+  box-shadow:0px 0px 7px lightgreen;
 }
 table td{
-  border: 1px solid black;
 }
-input{
+input,select{
+width:100%;
 height:40px;
 font-size:20px;
 }
@@ -46,15 +53,22 @@ box-shadow:3px 3px 7px black;
 width:45px;
 }
 </style>
-<table id="mainTable">
-<tr><td colspan="7"><input type="text" id="medicineName" onkeyup="searchMedicine()"></td></tr>
-<tr><td id="out" colspan="6"></td></tr>
-</table>
-
-<button type="button" class="home" onclick="gotohome()">Home</button>
 
 <table id="selTable">
 
+</table>
+
+<table id="mainTable">
+<tr><td colspan="7"><input type="text" id="medicineName" placeholder="Enter medicine name to search" onkeyup="searchMedicine()"></td></tr>
+<tr><td id="out" colspan="6"></td></tr>
+</table>
+
+<table>
+<tr>
+<td>
+<button type="button" class="home" onclick="gotohome()">Home</button>
+</td>
+</tr>
 </table>
 <script>
 function gotohome(){
@@ -217,6 +231,51 @@ function optionListener(respObj,option){
     tr2.appendChild(td24);
     selTable.appendChild(tr2);
     selTableRows.push(tr2);
+    
+    if(respObj.itmPrUnit && respObj.itmPrUnit!="1") {
+    	let tr_3 = createRowWithTitles(["Unit Item to sell","Discount %","Discount","Price After Discount",""]);
+        selTable.appendChild(tr_3);
+        selTableRows.push(tr_3);
+        
+        let tr3=document.createElement("tr");
+        let td30=document.createElement("td");
+        let td31=document.createElement("td");
+        let td32=document.createElement("td");
+        let td33=document.createElement("td");
+        let td34=document.createElement("td");
+        let qtyInput3=document.createElement("input");
+        qtyInput3.setAttribute("type","number");
+        qtyInput3.value = 1;
+        td30.appendChild(qtyInput3);
+        
+        //discount dropdown
+        let discDrpDwn3 = document.createElement("select");
+        for(index in percentages) {
+        	let opt = document.createElement("option");
+        	opt.value = parseFloat(percentages[index]/100);
+        	opt.innerText = percentages[index]+"%";
+        	discDrpDwn3.appendChild(opt);
+        }
+        let perUnitPrice = parseFloat(respObj.price)/parseFloat(respObj.itmPrUnit);
+        console.log("perUnitPrice",perUnitPrice);
+        qtyInput3.addEventListener("keyup",changeTotalValue(discDrpDwn3,qtyInput3,perUnitPrice,td32,td33));
+        discDrpDwn3.addEventListener("change",changeTotalValue(discDrpDwn3,qtyInput3,perUnitPrice,td32,td33));
+        td31.appendChild(discDrpDwn3);
+        td32.innerText=0;
+        td33.innerText=perUnitPrice;
+        let sellBtn3 = document.createElement("button");
+        sellBtn3.innerText = "Sell Per Unit";
+        sellBtn3.setAttribute("class","sellBtn");
+        td34.appendChild(sellBtn3);
+        
+        tr3.appendChild(td30);
+        tr3.appendChild(td31);
+        tr3.appendChild(td32);
+        tr3.appendChild(td33);
+        tr3.appendChild(td34);
+        selTable.appendChild(tr3);
+        selTableRows.push(tr3);	
+    }
   };
   return func;
 }

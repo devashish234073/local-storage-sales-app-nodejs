@@ -1,5 +1,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
+table{
+  border-collapse:collapse;
+  table-layout: fixed;
+  margin-top:40px;
+  margin-left:auto;
+  margin-right:auto;
+  box-shadow:0px 0px 7px lightgreen;
+}
+select {
+width:100%;
+height:30px;
+border:none;
+}
 button{
 width:100%;
 height:30px;
@@ -18,8 +31,8 @@ background-color: blue;
 }
 </style>
 <p id="out"></p>
-__EXISTING_FILES__
 <table>
+<tr><td colspan="2">__EXISTING_FILES__</td></tr>
 <tr><td>Medicine Name</td><td><input type="text" id="name"></td></tr>
 <tr><td>Brand</td><td><input type="text" id="brand"></td></tr>
 <tr><td>Wholesale Price</td><td><input type="number" id="actualprice"></td></tr>
@@ -68,7 +81,7 @@ xhttp.onreadystatechange = function() {
        reset([name,brand,price,actualprice,qty,ctrId]);
     }
 };
-xhttp.open("GET", `/api/adddata?name=${v(name)}&brand=${v(brand)}&price=${v(price)}&actualprice=${v(actualprice)}&qty=${v(qty)}&itmPrUnit=${itmPrUnit}&ctrId=${v(ctrId)}`, true);
+xhttp.open("GET", `/api/adddata?name=${v(name)}&brand=${v(brand)}&price=${v(price)}&actualprice=${v(actualprice)}&qty=${v(qty)}&itmPrUnit=${v(itmPrUnit)}&ctrId=${v(ctrId)}`, true);
 xhttp.send();
 }
 let dropDown=document.querySelector("select");
