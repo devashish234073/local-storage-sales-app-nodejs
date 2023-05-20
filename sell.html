@@ -286,8 +286,8 @@ function optionListener(respObj,option){
 function changeTotalValue(discountDropDown,qtyFld,price,discountValueTd,totalAfterDiscountTd) {
 	return function() {
 		let totalPrice = price*parseInt(qtyFld.value);
-		let discountedValue = parseFloat(discountDropDown.value)*totalPrice;
-		let valueAfterDiscount = totalPrice - discountedValue;
+		let discountedValue = (parseFloat(discountDropDown.value)*totalPrice).toFixed(2);
+		let valueAfterDiscount = (totalPrice - discountedValue).toFixed(2);
 		discountValueTd.innerText = discountedValue;
 		totalAfterDiscountTd.innerText = valueAfterDiscount;
 	}

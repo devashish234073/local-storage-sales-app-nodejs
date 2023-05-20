@@ -106,6 +106,30 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': 'text/html' });
     let sellpage = getPage("sell.html");
     res.end(sellpage);
+  } else if (req.method === 'GET' && req.url.startsWith('/salesData')) {
+	res.writeHead(200, { 'Content-Type': 'text/html' });
+    let allData=getPage("sales.html");
+    let files = fs.readdirSync("sales");
+    let table="<table>";
+    table+="<tr><td>Date</td><td>Product Name</td><td>Brand</td><td>Wholesale Price</td><td>Selling Price</td><td>SALE TYPE</td><td>Qty Sold</td><td>Discount</td><td>Total Charged</td></tr>";
+    for(i in files){
+      let file = files[i];
+      let dt = JSON.parse(fs.readFileSync("sales/"+file));
+      table+=`<tr>
+                  <td>${file.replace(".json","").split("_").join(" ")}</td>
+                  <td>${dt.name}</td>
+                  <td>${dt.brand}</td>
+                  <td>${dt.actualprice}</td>
+                  <td>${dt.price}</td>
+                  <td>${dt.sale_type}</td>
+                  <td>${dt.qty_sold}</td>
+                  <td>${parseFloat(dt.discount).toFixed(2)}</td>
+                  <td>${parseFloat(dt.net_charged).toFixed(2)}</td>
+           </tr>`;
+    }
+    table+="</table>";
+    allData=allData.replace("__TABLE__",table);
+    res.end(allData);
   } else if (req.method === 'GET' && req.url.startsWith('/seealldata')) {
     res.writeHead(200, { 'Content-Type': 'text/html' });
     let allData=getPage("seeAllData.html");
