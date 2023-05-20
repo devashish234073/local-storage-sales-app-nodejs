@@ -222,6 +222,7 @@ function optionListener(respObj,option){
     let sellBtn = document.createElement("button");
     sellBtn.innerText = "Sell";
     sellBtn.setAttribute("class","sellBtn");
+    sellBtn.addEventListener("click",sell((respObj.name).trim().split(" ").join("_"),respObj.brand,respObj.price,respObj.actualprice,"WHOLE",qtyInput,td22,td23));
     td24.appendChild(sellBtn);
     
     tr2.appendChild(td20);
@@ -257,6 +258,7 @@ function optionListener(respObj,option){
         	discDrpDwn3.appendChild(opt);
         }
         let perUnitPrice = parseFloat(respObj.price)/parseFloat(respObj.itmPrUnit);
+        let perUnitActualPrice = parseFloat(respObj.actualprice)/parseFloat(respObj.itmPrUnit);
         console.log("perUnitPrice",perUnitPrice);
         qtyInput3.addEventListener("keyup",changeTotalValue(discDrpDwn3,qtyInput3,perUnitPrice,td32,td33));
         discDrpDwn3.addEventListener("change",changeTotalValue(discDrpDwn3,qtyInput3,perUnitPrice,td32,td33));
@@ -266,6 +268,7 @@ function optionListener(respObj,option){
         let sellBtn3 = document.createElement("button");
         sellBtn3.innerText = "Sell Per Unit";
         sellBtn3.setAttribute("class","sellBtn");
+        sellBtn3.addEventListener("click",sell((respObj.name).trim().split(" ").join("_"),respObj.brand,perUnitPrice,perUnitActualPrice,"PER_UNIT",qtyInput,td32,td33));
         td34.appendChild(sellBtn3);
         
         tr3.appendChild(td30);
@@ -292,7 +295,18 @@ function changeTotalValue(discountDropDown,qtyFld,price,discountValueTd,totalAft
 
 function sell(name, brand, price, actualprice, sale_type,qty_sold,discount,net_charged) {
 	return function() {
-		
+		let qty_soldV=qty_sold.value;
+		let discountV=discount.innerText;
+		let net_chargedV=net_charged.innerText;
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+		    if (this.readyState == 4 && this.status == 200) {
+		    	alert(xhttp.responseText);
+		    }
+		}
+		xhttp.open("POST", `/api/sell`, true);
+		xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+		xhttp.send(`name=${name}&brand=${brand}&price=${price}&actualprice=${actualprice}&sale_type=${sale_type}&qty_sold=${qty_soldV}&discount=${discountV}&net_charged=${net_chargedV}`);
 	};
 }
 

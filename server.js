@@ -1,6 +1,7 @@
 const http = require('http');
 const fs = require('fs');
 const url = require('url');
+const querystring = require('querystring');
 
 const server = http.createServer((req, res) => {
   if (req.method === 'GET' && req.url.startsWith('/api/readdata')) {
@@ -25,27 +26,34 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify(objs));
     }
 
-  } else if (req.method === 'GET' && req.url.startsWith('/api/sell')) {
-	const query = url.parse(req.url, true).query;
-    let { name, brand, price, actualprice, sale_type,qty_sold,discount,net_charged } = query;
-    const data = { name, brand, price, actualprice, sale_type,qty_sold,discount,net_charged };
-    let filePrefix = String(new Date()).split(" ").join("_").split("+").join("_").split(":").join("_").split("(").join("").split(")").join("");
+  } else if (req.method === 'POST' && req.url.startsWith('/api/sell')) {
+	//const query = url.parse(req.url, true).query;
+	let reqBody = '';
+	req.on('data', (chunk) => {
+      reqBody += chunk.toString();
+    });
+    req.on('end', () => {
+      const formData = querystring.parse(reqBody);
+      let { name, brand, price, actualprice, sale_type,qty_sold,discount,net_charged } = formData;
+      const data = { name, brand, price, actualprice, sale_type,qty_sold,discount,net_charged };
+      let filePrefix = String(new Date()).split(" ").join("_").split("+").join("_").split(":").join("_").split("(").join("").split(")").join("");
     
-    if(name.indexOf("%20")>-1){
-        name = name.split("%20").join("_");
-    }
-    if(name.indexOf(" ")>-1){
-        name = name.split(" ").join("_");
-    }
-
-    let fileName = filePrefix + name;
-    fs.writeFile(filename, JSON.stringify(data), (err) => {
-	  if(err) {
-	    res.end("error while saving");
-      } else {
-	    res.end("sales data saved successfully");
+      if(name.indexOf("%20")>-1){
+          name = name.split("%20").join("_");
       }
-	});
+      if(name.indexOf(" ")>-1){
+          name = name.split(" ").join("_");
+      }
+
+      let filename = filePrefix + name;
+      fs.writeFile("sales/"+filename, JSON.stringify(data), (err) => {
+	    if(err) {
+	      res.end("error while saving");
+        } else {
+	      res.end("sales data saved successfully");
+        }
+	  });
+    });
   } else if (req.method === 'GET' && req.url.startsWith('/api/adddata')) {
     const query = url.parse(req.url, true).query;
     let { name, brand, price, actualprice, qty, ctrId, itmPrUnit } = query;
