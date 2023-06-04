@@ -118,7 +118,7 @@ const server = http.createServer((req, res) => {
       let file = files[i];
       let dt = JSON.parse(fs.readFileSync("sales/"+file));
       table+=`<tr>
-                  <td>${file.replace(".json","").split("_").join(" ")}</td>
+                  <td id="firstCol">${file.replace(".json","").split("_").join(" ").split(" GMT ")[0]}</td>
                   <td>${dt.name}</td>
                   <td>${dt.brand}</td>
                   <td>${dt.actualprice}</td>
