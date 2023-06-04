@@ -56,7 +56,7 @@ const server = http.createServer((req, res) => {
     });
   } else if (req.method === 'GET' && req.url.startsWith('/api/adddata')) {
     const query = url.parse(req.url, true).query;
-    let { name, brand, price, actualprice, qty, ctrId, itmPrUnit } = query;
+    let { name, brand, price, actualprice, qty, ctrId, itmPrUnit, composition, uses } = query;
     
     if (!name || !price) {
       res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -71,7 +71,7 @@ const server = http.createServer((req, res) => {
         name = name.split(" ").join("_");
     }
 
-    const data = { name, brand, price, actualprice, qty, ctrId, itmPrUnit };
+    const data = { name, brand, price, actualprice, qty, ctrId, itmPrUnit, composition, uses };
     const filename = `medicines/${name}.json`;
 
     fs.writeFile(filename, JSON.stringify(data), (err) => {

@@ -89,7 +89,7 @@ xhttp.onreadystatechange = function() {
        reset([name,brand,price,actualprice,qty,ctrId,composition,uses]);
     }
 };
-xhttp.open("GET", `/api/adddata?name=${v(name)}&brand=${v(brand)}&price=${v(price)}&actualprice=${v(actualprice)}&qty=${v(qty)}&itmPrUnit=${v(itmPrUnit)}&ctrId=${v(ctrId)}&composition=${v(composition)}&uses=${v(uses)}}`, true);
+xhttp.open("GET", `/api/adddata?name=${v(name)}&brand=${v(brand)}&price=${v(price)}&actualprice=${v(actualprice)}&qty=${v(qty)}&itmPrUnit=${v(itmPrUnit)}&ctrId=${v(ctrId)}&composition=${v(composition)}&uses=${v(uses)}`, true);
 xhttp.send();
 }
 let dropDown=document.querySelector("select");
@@ -106,8 +106,8 @@ xhttp.onreadystatechange = function() {
          actualprice.value=data[0].actualprice;
          brand.value=data[0].brand;
          ctrId.value=data[0].ctrId;
-         composition.value=data[0].composition;
-         uses.value=data[0].uses;
+         composition.value=data[0].composition?data[0].composition:"";
+         uses.value=data[0].uses?data[0].uses:"";
          itmPrUnit.value=data[0].itmPrUnit;
          qty.value=data[0].qty;
        }
