@@ -135,11 +135,26 @@ const server = http.createServer((req, res) => {
     let allData=getPage("seeAllData.html");
     let files = fs.readdirSync("medicines");
     let table="<table>";
-    table+="<tr><td>Medicine Name</td><td>Brand</td><td>Wholesale Price</td><td>Selling Price</td><td>Quantity</td><td>Counter Id</td></tr>";
+    //table+="<tr><td>Medicine Name</td><td>Brand</td><td>Wholesale Price</td><td>Selling Price</td><td>Quantity</td><td>Counter Id</td></tr>";
     for(i in files){
       let file = files[i];
       let dt = JSON.parse(fs.readFileSync("medicines/"+file));
-      table+=`<tr><td>${dt.name}</td><td>${dt.brand}</td><td>${dt.actualprice}</td><td>${dt.price}</td><td>${dt.qty}</td><td>${dt.ctrId}</td></tr>`;
+      let cls="odd";
+      if(i%2==0) {
+	    cls = "even";
+      }
+      table+=`<tr class="${cls}">
+                  <td><span class="lbl">Name</span>${dt.name}</td>
+                  <td><span class="lbl">Brand</span>${dt.brand}</td>
+                  <td><span class="lbl">Composition</span>${dt.composition}</td>
+                  <td><span class="lbl">Uses</span>${dt.uses}</td> 
+             </tr>
+             <tr class="${cls}">
+                  <td><span class="lbl">Actual Price</span>${dt.actualprice}</td>
+                  <td><span class="lbl">Price</span>${dt.price}</td>
+                  <td><span class="lbl">Quantity</span>${dt.qty}</td>
+                  <td><span class="lbl">Counter Id</span>${dt.ctrId}</td>
+             </tr>`;
     }
     table+="</table>";
     allData=allData.replace("__TABLE__",table);
