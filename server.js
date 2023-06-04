@@ -102,6 +102,8 @@ const server = http.createServer((req, res) => {
       addData=addData.replace("__EXISTING_FILES__",selectTag);
     }
     res.end(addData);
+  } else if (req.method === 'GET' && req.url.startsWith('/bootstrap')) {
+	res.end(fs.readFileSync("bootstrap.min.css"));
   } else if (req.method === 'GET' && req.url.startsWith('/sell')) {
     res.writeHead(200, { 'Content-Type': 'text/html' });
     let sellpage = getPage("sell.html");
@@ -110,7 +112,7 @@ const server = http.createServer((req, res) => {
 	res.writeHead(200, { 'Content-Type': 'text/html' });
     let allData=getPage("sales.html");
     let files = fs.readdirSync("sales");
-    let table="<table>";
+    let table="<table class='table table-dark'>";
     table+="<tr><td>Date</td><td>Product Name</td><td>Brand</td><td>Wholesale Price</td><td>Selling Price</td><td>SALE TYPE</td><td>Qty Sold</td><td>Discount</td><td>Total Charged</td></tr>";
     for(i in files){
       let file = files[i];
@@ -134,7 +136,7 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': 'text/html' });
     let allData=getPage("seeAllData.html");
     let files = fs.readdirSync("medicines");
-    let table="<table>";
+    let table="<table class='table table-dark'>";
     //table+="<tr><td>Medicine Name</td><td>Brand</td><td>Wholesale Price</td><td>Selling Price</td><td>Quantity</td><td>Counter Id</td></tr>";
     for(i in files){
       let file = files[i];
@@ -146,8 +148,8 @@ const server = http.createServer((req, res) => {
       table+=`<tr class="${cls}">
                   <td><span class="lbl">Name</span>${dt.name}</td>
                   <td><span class="lbl">Brand</span>${dt.brand}</td>
-                  <td><span class="lbl">Composition</span>${dt.composition}</td>
-                  <td><span class="lbl">Uses</span>${dt.uses}</td> 
+                  <td><span class="lbl">Composition</span>${dt.composition?dt.composition:""}</td>
+                  <td><span class="lbl">Uses</span>${dt.uses?dt.uses:""}</td> 
              </tr>
              <tr class="${cls}">
                   <td><span class="lbl">Actual Price</span>${dt.actualprice}</td>

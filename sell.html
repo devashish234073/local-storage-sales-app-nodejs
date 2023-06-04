@@ -1,4 +1,5 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="./bootstrap.min.css" rel="stylesheet">
 <style>
 *{
 outline:none;
@@ -16,9 +17,12 @@ width:100%;
 #medicineName {
   width:100%;
 }
-table tr:nth-child(odd) {
-background-color:lightblue;
+.table {
+  width: 90%;
 }
+/*table tr:nth-child(odd) {
+background-color:lightblue;
+}*/
 table{
   border-collapse:collapse;
   table-layout: fixed;
@@ -56,22 +60,21 @@ box-shadow:3px 3px 7px black;
 width:45px;
 }
 </style>
-
-<table id="selTable">
-
-</table>
-
-<table id="mainTable">
-<tr><td colspan="7"><input type="text" id="medicineName" placeholder="Enter medicine name to search" onkeyup="searchMedicine()"></td></tr>
-<tr><td id="out" colspan="6"></td></tr>
-</table>
-
 <table>
 <tr>
 <td>
 <button type="button" class="home" onclick="gotohome()">Home</button>
 </td>
 </tr>
+</table>
+
+<table id="selTable" class="table table-dark">
+
+</table>
+
+<table id="mainTable" class="table table-dark">
+<tr><td colspan="7"><input type="text" id="medicineName" placeholder="Enter medicine name to search" onkeyup="searchMedicine()"></td></tr>
+<tr><td id="out" colspan="6"></td></tr>
 </table>
 <script>
 function gotohome(){
