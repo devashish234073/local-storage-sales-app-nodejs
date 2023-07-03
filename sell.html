@@ -213,13 +213,14 @@ function optionListener(respObj,option){
     
     //discount dropdown
     let discDrpDwn = document.createElement("select");
-    let percentages = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,2,22,23,24,25];
+    let percentages = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25];
     for(index in percentages) {
     	let opt = document.createElement("option");
     	opt.value = parseFloat(percentages[index]/100);
     	opt.innerText = percentages[index]+"%";
     	discDrpDwn.appendChild(opt);
     }
+    discDrpDwn.addEventListener("click",changeDropDownValue(discDrpDwn,qtyInput,respObj.price,td22,td23));
     qtyInput.addEventListener("keyup",changeTotalValue(discDrpDwn,qtyInput,respObj.price,td22,td23));
     discDrpDwn.addEventListener("change",changeTotalValue(discDrpDwn,qtyInput,respObj.price,td22,td23));
     td21.appendChild(discDrpDwn);
@@ -296,6 +297,16 @@ function changeTotalValue(discountDropDown,qtyFld,price,discountValueTd,totalAft
 		let valueAfterDiscount = (totalPrice - discountedValue).toFixed(2);
 		discountValueTd.innerText = discountedValue;
 		totalAfterDiscountTd.innerText = valueAfterDiscount;
+	}
+}
+
+function changeDropDownValue(discountDropDown,qtyFld,price,discountValueTd,totalAfterDiscountTd) {
+	return function() {
+		/*let totalPrice = price*parseInt(qtyFld.value);
+		let discountedValue = (parseFloat(discountDropDown.value)*totalPrice).toFixed(2);
+		let valueAfterDiscount = (totalPrice - discountedValue).toFixed(2);
+		discountValueTd.innerText = discountedValue;
+		totalAfterDiscountTd.innerText = valueAfterDiscount;*/
 	}
 }
 
