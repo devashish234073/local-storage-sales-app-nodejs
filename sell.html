@@ -205,6 +205,9 @@ function optionListener(respObj,option){
     let td21=document.createElement("td");
     let td22=document.createElement("td");
     let td23=document.createElement("td");
+    let totalValFld = document.createElement("input");
+    totalValFld.setAttribute("type","number");
+    
     let td24=document.createElement("td");
     let qtyInput=document.createElement("input");
     qtyInput.setAttribute("type","number");
@@ -220,18 +223,18 @@ function optionListener(respObj,option){
     	opt.innerText = percentages[index]+"%";
     	discDrpDwn.appendChild(opt);
     }
-    discDrpDwn.addEventListener("click",changeDropDownValue(discDrpDwn,qtyInput,respObj.price,td22,td23));
-    qtyInput.addEventListener("keyup",changeTotalValue(discDrpDwn,qtyInput,respObj.price,td22,td23));
-    discDrpDwn.addEventListener("change",changeTotalValue(discDrpDwn,qtyInput,respObj.price,td22,td23));
+    totalValFld.addEventListener("keyup",changeDropDownValue(discDrpDwn,qtyInput,respObj.price,td22,totalValFld));
+    qtyInput.addEventListener("keyup",changeTotalValue(discDrpDwn,qtyInput,respObj.price,td22,totalValFld));
+    discDrpDwn.addEventListener("change",changeTotalValue(discDrpDwn,qtyInput,respObj.price,td22,totalValFld));
     td21.appendChild(discDrpDwn);
     td22.innerText=0;
-    td23.innerText=respObj.price;
+    totalValFld.value=respObj.price;
     let sellBtn = document.createElement("button");
     sellBtn.innerText = "Sell";
     sellBtn.setAttribute("class","sellBtn");
-    sellBtn.addEventListener("click",sell((respObj.name).trim().split(" ").join("_"),respObj.brand,respObj.price,respObj.actualprice,"WHOLE",qtyInput,td22,td23));
+    sellBtn.addEventListener("click",sell((respObj.name).trim().split(" ").join("_"),respObj.brand,respObj.price,respObj.actualprice,"WHOLE",qtyInput,td22,totalValFld));
     td24.appendChild(sellBtn);
-    
+    td23.appendChild(totalValFld);
     tr2.appendChild(td20);
     tr2.appendChild(td21);
     tr2.appendChild(td22);
@@ -290,23 +293,41 @@ function optionListener(respObj,option){
   return func;
 }
 
-function changeTotalValue(discountDropDown,qtyFld,price,discountValueTd,totalAfterDiscountTd) {
+function changeTotalValue(discountDropDown,qtyFld,price,discountValueTd,totalValFld) {
 	return function() {
 		let totalPrice = price*parseInt(qtyFld.value);
 		let discountedValue = (parseFloat(discountDropDown.value)*totalPrice).toFixed(2);
 		let valueAfterDiscount = (totalPrice - discountedValue).toFixed(2);
 		discountValueTd.innerText = discountedValue;
-		totalAfterDiscountTd.innerText = valueAfterDiscount;
+		totalValFld.value = valueAfterDiscount;
 	}
 }
 
-function changeDropDownValue(discountDropDown,qtyFld,price,discountValueTd,totalAfterDiscountTd) {
+function changeDropDownValue(discountDropDown,qtyFld,price,discountValueTd,totalValFld) {
 	return function() {
-		/*let totalPrice = price*parseInt(qtyFld.value);
-		let discountedValue = (parseFloat(discountDropDown.value)*totalPrice).toFixed(2);
-		let valueAfterDiscount = (totalPrice - discountedValue).toFixed(2);
-		discountValueTd.innerText = discountedValue;
-		totalAfterDiscountTd.innerText = valueAfterDiscount;*/
+    if(isNaN(totalValFld.value)) {
+      return;
+    }
+		let totalPrice = price*parseInt(qtyFld.value);
+    let totalAfterDiscount = totalValFld.value;
+    let discountValue = (totalPrice-totalAfterDiscount).toFixed(2);
+    let discountFraction = (parseFloat(discountValue)/parseFloat(totalPrice)).toFixed(2);
+    let discountPercentValue = parseInt(discountFraction*100);
+    let optionAlreadyExists = false;
+    try {
+      const optionLabels = Array.from(discountDropDown.options).map((opt) => opt.value);
+      optionAlreadyExists = optionLabels.includes(discountFraction);
+    } catch(e) {
+
+    }
+    if(!optionAlreadyExists) {
+      let opt = document.createElement("option");
+      opt.value = discountFraction;
+      opt.innerText = discountPercentValue+"%";
+      discountDropDown.appendChild(opt);
+    }
+    discountDropDown.value = discountFraction;
+    discountValueTd.innerText = discountValue;
 	}
 }
 
@@ -314,7 +335,7 @@ function sell(name, brand, price, actualprice, sale_type,qty_sold,discount,net_c
 	return function() {
 		let qty_soldV=qty_sold.value;
 		let discountV=discount.innerText;
-		let net_chargedV=net_charged.innerText;
+		let net_chargedV=net_charged.value;
 		var xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function() {
 		    if (this.readyState == 4 && this.status == 200) {
