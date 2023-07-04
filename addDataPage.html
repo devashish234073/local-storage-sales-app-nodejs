@@ -122,7 +122,7 @@ name.addEventListener("keyup",function(){
 });
 function populateData(drpDwn){
   return function() {
-    if(filteredMeds.value!=""){
+    if(drpDwn.value!=""){
 var xhttp = new XMLHttpRequest();
 xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -140,7 +140,7 @@ xhttp.onreadystatechange = function() {
        }
     }
 };
-xhttp.open("GET", `/api/readdata?name=${v(filteredMeds)}`, true);
+xhttp.open("GET", `/api/readdata?name=${v(drpDwn)}`, true);
 xhttp.send();
   }
   }
