@@ -111,7 +111,7 @@ const server = http.createServer((req, res) => {
   } else if (req.method === 'GET' && req.url.startsWith('/salesData')) {
 	res.writeHead(200, { 'Content-Type': 'text/html' });
     let allData=getPage("sales.html");
-    let files = fs.readdirSync("sales");
+    let files = getFileNamesSync("sales");
     let table="<table class='table table-dark'>";
     table+="<tr><td>Date</td><td>Product Name</td><td>Brand</td><td>Wholesale Price</td><td>Selling Price</td><td>SALE TYPE</td><td>Qty Sold</td><td>Discount</td><td>Total Charged</td></tr>";
     for(i in files){
@@ -173,5 +173,24 @@ server.listen(3000, () => {
 
 function getPage(pagename){
   return String(fs.readFileSync(pagename));
+}
+
+function getFileNamesSync(dir) {
+  const files = fs.readdirSync(dir);
+
+  const sortedFiles = files.map(function (fileName) {
+    return {
+      name: fileName,
+      time: fs.statSync(dir + '/' + fileName).mtime.getTime()
+    };
+  })
+  .sort(function (a, b) {
+    return b.time - a.time;
+  })
+  .map(function (v) {
+    return v.name;
+  });
+
+  return sortedFiles;
 }
 
