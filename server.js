@@ -91,9 +91,9 @@ const server = http.createServer((req, res) => {
     let addData = getPage("adddatapage.html");
     let files = getFileNamesSync("medicines");
     if(!files || files.length==0){
-       addData=addData.replace("__EXISTING_FILES__","");
+       addData=addData.replace("__EXISTING_FILES__","<select id='allMeds'><option value=''>--Choose--</option></select>");
     } else {
-      let selectTag = "<select><option value=''>--Choose--</option>";
+      let selectTag = "<select id='allMeds'><option value=''>--Choose--</option>";
       for(i in files){
         let file = files[i];
         selectTag+="<option value='"+file+"'>"+file.split("_").join(" ").replace(".json","")+"</option>";

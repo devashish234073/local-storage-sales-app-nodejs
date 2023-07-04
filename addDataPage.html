@@ -37,6 +37,7 @@ background-color: blue;
 <p id="out"></p>
 <table class="table table-dark">
 <tr><td colspan="2">__EXISTING_FILES__</td></tr>
+<tr><td colspan="2"><select id="filteredMeds"></select></td></tr>
 <tr><td>Medicine Name</td><td><input type="text" id="name"></td></tr>
 <tr><td>Brand</td><td><input type="text" id="brand"></td></tr>
 <tr><td>Composition</td><td><input type="text" id="composition"></td></tr>
@@ -92,10 +93,35 @@ xhttp.onreadystatechange = function() {
 xhttp.open("GET", `/api/adddata?name=${v(name)}&brand=${v(brand)}&price=${v(price)}&actualprice=${v(actualprice)}&qty=${v(qty)}&itmPrUnit=${v(itmPrUnit)}&ctrId=${v(ctrId)}&composition=${v(composition)}&uses=${v(uses)}`, true);
 xhttp.send();
 }
-let dropDown=document.querySelector("select");
-dropDown.addEventListener("change",populateData);
-function populateData(){
-  if(dropDown.value!=""){
+let dropDown=document.querySelector("#allMeds");
+dropDown.addEventListener("change",populateData(dropDown));
+let filteredMeds=document.querySelector("#filteredMeds");
+filteredMeds.addEventListener("change",populateData(filteredMeds));
+name.addEventListener("keyup",function(){
+  let inTxt = [];
+  let val = [];
+  for(let i=0;i<dropDown.options.length;i++) {
+    let opt = dropDown.options[i];
+    if(opt.value!="" && opt.value.toLowerCase().indexOf(name.value.toLowerCase())>-1) {
+      inTxt.push(opt.innerText);
+      val.push(opt.value);
+    }
+  }
+  if(val.length>0) {
+    while (filteredMeds.options.length > 0) {
+      filteredMeds.remove(0);
+    }
+    for(let i=0;i<val.length;i++) {
+      let opt = document.createElement("option");
+      opt.innerText = inTxt[i];
+      opt.value = val[i];
+      filteredMeds.appendChild(opt);
+    }
+  }
+});
+function populateData(drpDwn){
+  return function() {
+    if(filteredMeds.value!=""){
 var xhttp = new XMLHttpRequest();
 xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -113,8 +139,9 @@ xhttp.onreadystatechange = function() {
        }
     }
 };
-xhttp.open("GET", `/api/readdata?name=${v(dropDown)}`, true);
+xhttp.open("GET", `/api/readdata?name=${v(filteredMeds)}`, true);
 xhttp.send();
+  }
   }
 }
 </script>
