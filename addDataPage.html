@@ -97,6 +97,7 @@ let dropDown=document.querySelector("#allMeds");
 dropDown.addEventListener("change",populateData(dropDown));
 let filteredMeds=document.querySelector("#filteredMeds");
 filteredMeds.addEventListener("change",populateData(filteredMeds));
+filteredMeds.addEventListener("click",populateData(filteredMeds));
 name.addEventListener("keyup",function(){
   let inTxt = [];
   let val = [];
