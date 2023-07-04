@@ -89,7 +89,7 @@ const server = http.createServer((req, res) => {
   } else if (req.method === 'GET' && req.url.startsWith('/adddata')) {
     res.writeHead(200, { 'Content-Type': 'text/html' });
     let addData = getPage("adddatapage.html");
-    let files = fs.readdirSync("medicines");
+    let files = getFileNamesSync("medicines");
     if(!files || files.length==0){
        addData=addData.replace("__EXISTING_FILES__","");
     } else {
@@ -135,7 +135,7 @@ const server = http.createServer((req, res) => {
   } else if (req.method === 'GET' && req.url.startsWith('/seealldata')) {
     res.writeHead(200, { 'Content-Type': 'text/html' });
     let allData=getPage("seeAllData.html");
-    let files = fs.readdirSync("medicines");
+    let files = getFileNamesSync("medicines");
     let table="<table class='table table-dark'>";
     //table+="<tr><td>Medicine Name</td><td>Brand</td><td>Wholesale Price</td><td>Selling Price</td><td>Quantity</td><td>Counter Id</td></tr>";
     for(i in files){
